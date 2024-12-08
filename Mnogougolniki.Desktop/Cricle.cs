@@ -7,14 +7,9 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Mnogougolniki.Desktop
 {
-    sealed class Cricle:Shape
+    public sealed class Circle:Shape
     {
-        public int x;
-        public int y;
-        int radius;
-        protected override void ChancheR()
-        {
-            
-        }
+        public Circle(int x, int y) : base(x, y) { }
+      
     }
 }

@@ -8,12 +8,7 @@ namespace Mnogougolniki.Desktop
 {
     sealed class Square : Shape
     {
-        public int x;
-        public int y;
-        int radius;
-        protected override void ChancheR()
-        {
+        public Square(int x, int y) : base(x, y) { }
 
-        }
     }
 }
