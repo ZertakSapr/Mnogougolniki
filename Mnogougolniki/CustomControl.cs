@@ -16,7 +16,7 @@ namespace Mnogougolniki
             new Square(500, 500)
         ];
         
-        int prx, pry;
+        int prex, prey;
 
         public void Delete(double X, double Y)
         {
@@ -43,8 +43,8 @@ namespace Mnogougolniki
                 if (shape.IsInside((int)X, (int)Y))
                 {
                     in_shape = true;
-                    prx = (int)X;
-                    pry = (int)Y;
+                    prex = (int)X;
+                    prey = (int)Y;
                     shape.Move = true;
                 }
             }
@@ -63,13 +63,13 @@ namespace Mnogougolniki
             {
                 if (shape.Move)
                 {
-                    shape.X += (int)X - prx;
-                    shape.Y += (int)Y - pry;
+                    shape.X += (int)X - prex;
+                    shape.Y += (int)Y - prey;
                 }
                 
             }
-            prx = (int)X;
-            pry = (int)Y;
+            prex = (int)X;
+            prey = (int)Y;
             InvalidateVisual();
         }
         
@@ -80,13 +80,13 @@ namespace Mnogougolniki
             {
                 if (shape.Move)
                 {
-                    shape.X += (int)X - prx;
-                    shape.Y += (int)Y - pry;
+                    shape.X += (int)X - prex;
+                    shape.Y += (int)Y - prey;
                     shape.Move = false;
                 }
             }
-            prx = (int)X;
-            pry = (int)Y;
+            prex = (int)X;
+            prey = (int)Y;
             InvalidateVisual();
         }
         
