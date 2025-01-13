@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Drawing;
 
 namespace Mnogougolniki
 {
@@ -97,6 +98,49 @@ namespace Mnogougolniki
             {
                 s.Draw(drawingContext);
             }
+            if(shapes.Count > 2)
+            {
+                int i = 0;
+                foreach (var s1 in shapes)
+                {
+                    int j = 0;
+                    foreach (var s2 in shapes)
+                    {
+                        if (i >= j)
+                        {
+                            j++;
+                            continue;
+                        }
+                        double k = (s2.Y - s1.Y) / (s2.X - s1.X);
+                        double b = s1.Y - k * s1.X;
+                        int m = 0;
+                        bool up = false;
+                        bool down = false;
+                        foreach (var s3 in shapes)
+                        {
+                            if (i == m || j == m)
+                            {
+                                m++;
+                                continue;
+                            }
+                            double y = k * s3.X + b;
+                            if (y < s3.Y) { down = true; }
+                            if (y > s3.Y) { up = true; }
+                            m++;
+                        }
+                        if (!down || !up)
+                        {
+                            Brush brush = new SolidColorBrush(Colors.Black);
+
+                            Pen pen = new(brush, 1, lineCap: PenLineCap.Square);
+                            drawingContext.DrawLine(pen, new Avalonia.Point(s1.X, s1.Y), new Avalonia.Point(s2.X, s2.Y));
+                        }
+                        j++;
+                    }
+                    i++;
+                }
+            }
+            
         }
     }
 }
