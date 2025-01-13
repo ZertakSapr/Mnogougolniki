@@ -12,8 +12,8 @@ namespace Mnogougolniki
     public class CustomControl : UserControl
     {
         private List<Shape> shapes = [
-            new Circle(300, 300),
-            new Square(500, 500)
+            new Circle(700, 700),
+            new Square(100, 100)
         ];
         
         int prex, prey;
