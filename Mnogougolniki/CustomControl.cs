@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
+using System.Runtime.CompilerServices;
+using Avalonia.Controls.Shapes;
 
 namespace Mnogougolniki
 {
@@ -53,6 +55,29 @@ namespace Mnogougolniki
             if (!in_shape)
             {
                 shapes.Add(new Triangle((int)X, (int)Y));
+                if (shapes.Count > 2)
+                {
+                    UpdateShellByDef();
+                   
+                    if (!shapes.Last().IsInShell)
+                    {
+                        
+                        shapes.Remove(shapes.Last());
+                        foreach (var s in shapes)
+                        {
+                            s.Move = true;
+                        }
+
+                        prex = (int)X;
+                        prey = (int)Y;
+                    }
+                    
+                    
+                        RemoveShapesInsideShell();
+
+
+                }
+               
             }
             InvalidateVisual();
         }
@@ -71,6 +96,7 @@ namespace Mnogougolniki
             }
             prex = (int)X;
             prey = (int)Y;
+            
             InvalidateVisual();
         }
         
@@ -88,15 +114,38 @@ namespace Mnogougolniki
             }
             prex = (int)X;
             prey = (int)Y;
+            
             InvalidateVisual();
         }
-        
-        
+
+
         public override void Render(DrawingContext drawingContext)
         {
-            foreach (var s in  shapes)
+            foreach (var s in shapes)
             {
                 s.Draw(drawingContext);
+            }
+            ShellByDef(drawingContext);
+        }
+
+        private void RemoveShapesInsideShell()
+        {
+            for (int i = 0; i < shapes.Count; i++) {
+                if (!shapes[i].IsInShell)
+                {
+                    shapes.Remove(shapes[i]);
+                }
+            }
+            
+
+            InvalidateVisual();
+        }
+        private  void ShellByDef(DrawingContext drawingContext)
+        {
+
+            foreach (var s in shapes)
+            {
+                s.IsInShell = false;
             }
             if(shapes.Count > 2)
             {
@@ -111,28 +160,50 @@ namespace Mnogougolniki
                             j++;
                             continue;
                         }
-                        double k = (s2.Y - s1.Y) / (s2.X - s1.X);
-                        double b = s1.Y - k * s1.X;
                         int m = 0;
                         bool up = false;
                         bool down = false;
-                        foreach (var s3 in shapes)
+                        if (s1.X == s2.X)
                         {
-                            if (i == m || j == m)
+                            foreach (var s3 in shapes)
                             {
+                                if (i == m || j == m)
+                                {
+                                    m++;
+                                    continue;
+                                }
+                                
+                                if (s2.X <= s3.X) { down = true; }
+                                if (s2.X > s3.X) { up = true; }
                                 m++;
-                                continue;
                             }
-                            double y = k * s3.X + b;
-                            if (y < s3.Y) { down = true; }
-                            if (y > s3.Y) { up = true; }
-                            m++;
                         }
+                        else{
+                            double k = (double)(s2.Y - s1.Y) / (s2.X - s1.X);
+                            double b = s1.Y - k * s1.X;
+
+
+                            foreach (var s3 in shapes)
+                            {
+                                if (i == m || j == m)
+                                {
+                                    m++;
+                                    continue;
+                                }
+                                double y = k * s3.X + b;
+                                if (y <= s3.Y) { down = true; }
+                                if (y > s3.Y) { up = true; }
+                                m++;
+                            }
+                        }
+                        
                         if (!down || !up)
                         {
                             Brush brush = new SolidColorBrush(Colors.Black);
 
                             Pen pen = new(brush, 1, lineCap: PenLineCap.Square);
+                            s1.IsInShell = true;
+                            s2.IsInShell = true;
                             drawingContext.DrawLine(pen, new Avalonia.Point(s1.X, s1.Y), new Avalonia.Point(s2.X, s2.Y));
                         }
                         j++;
@@ -142,5 +213,84 @@ namespace Mnogougolniki
             }
             
         }
+
+        private void UpdateShellByDef()
+        {
+
+            foreach (var s in shapes)
+            {
+                s.IsInShell = false;
+            }
+            if (shapes.Count > 2)
+            {
+
+                int i = 0;
+                foreach (var s1 in shapes)
+                {
+                    if (i == shapes.Count - 1)
+                    {
+                        break;
+                    }
+                    int j = 0;
+                    foreach (var s2 in shapes)
+                    {
+                        if (i >= j)
+                        {
+                            j++;
+                            continue;
+                        }
+                        int m = 0;
+                        bool up = false;
+                        bool down = false;
+                        if (s1.X == s2.X)
+                        {
+                            foreach (var s3 in shapes)
+                            {
+                                if (i == m || j == m)
+                                {
+                                    m++;
+                                    continue;
+                                }
+
+                                if (s2.X <= s3.X) { down = true; }
+                                if (s2.X > s3.X) { up = true; }
+                                m++;
+                            }
+                        }
+                        else
+                        {
+                            double k = (double)(s2.Y - s1.Y) / (s2.X - s1.X);
+                            double b = s1.Y - k * s1.X;
+
+
+                            foreach (var s3 in shapes)
+                            {
+                                if (i == m || j == m)
+                                {
+                                    m++;
+                                    continue;
+                                }
+                                double y = k * s3.X + b;
+                                if (y <= s3.Y) { down = true; }
+                                if (y > s3.Y) { up = true; }
+                                m++;
+                            }
+                        }
+
+                        if (!down || !up)
+                        {
+                            
+                            s1.IsInShell = true;
+                            s2.IsInShell = true;
+                            
+                        }
+                        j++;
+                    }
+                    i++;
+                }
+            }
+
+        }
+
     }
 }

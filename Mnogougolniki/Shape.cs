@@ -17,6 +17,7 @@ namespace Mnogougolniki
         protected bool IsDragged, IsMoved;
 
         static protected Color color;
+        public bool IsInShell{ get; set; } = true;
 
         protected Shape(int _x, int _y)
         {
